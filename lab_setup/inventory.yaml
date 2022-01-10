@@ -1,0 +1,25 @@
+---
+all:
+  vars:
+    become: false
+    networks:
+      - name: sas
+        subnet: 10.44.47.0/24
+        id: 1047
+        dnsname: sas.local
+    kvm_host: 192.168.0.15
+    remote_cloud_image: https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
+    os_image: /var/lib/libvirt/images/CentOS-8-x86_64-GenericCloud.qcow2
+    os_path: /var/lib/virt/nvme/
+    os_image_size: 40G
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILkHWxN2uZZK8in6yY6JnEKgHqkAJ8jysFU3Xuer8UTY"
+
+nodes:
+  hosts:
+    web.sas.local:
+  vars:
+    interfaces:
+      - network: sas
+    memory: 8
+    vcpus: 2
+    ansible_host: "{{ (lookup('file', inventory_dir + '/data.json') | from_json).get(inventory_hostname) }}"
